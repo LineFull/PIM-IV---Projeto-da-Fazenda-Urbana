@@ -1,0 +1,243 @@
+#USUARIO
+| Campo           | Tipo       | Descrição |
+|-----------------|------------|-----------|
+| cod_pessoa      | Número(4)  | Código único para identificar uma pessoa |
+| cod_funcionario | Número(4)  | Código único para identificar um funcionário |
+| email           | texto(100) | Endereço de e-mail do usuário |
+| status_conta    | texto(50)  | Status da conta do usuário (por exemplo, ativa, inativa) |
+| senha           | texto(100) | Senha criptografada do usuário |
+
+
+
+# FUNCIONARIO
+
+| Campo           | Tipo       | Descrição |
+|-----------------|------------|-----------|
+| cod_funcionario | Número(4)  | Código único para identificar um funcionário |
+| cod_cargo       | Número(4)  | Código único para identificar um cargo |
+| data_nascimento | date       | Data de nascimento do funcionário |
+| primeiro_nome   | texto(50)  | Primeiro nome do funcionário |
+| salario         | decimal(6.2) | Salário do funcionário |
+| CPF             | texto(11)  | CPF do funcionário |
+| RG              | texto(9)   | RG do funcionário |
+| ultimo_nome     | texto(50)  | Último nome do funcionário |
+
+
+# CARGO 
+| Campo       | Tipo       | Descrição |
+|-------------|------------|-----------|
+| cod_cargo   | Número(4)  | Código único para identificar um cargo |
+| nome_cargo  | texto(50)  | Nome do cargo |
+| departamento| texto(50)  | Departamento ao qual o cargo pertence |
+| descricao   | texto(50)  | Descrição do cargo |
+
+
+
+# FUNCIONARIO_TELEFONE
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_funcionario | Número(4) | Código único para identificar um funcionário |
+| cod_telefone    | Número(4) | Código único para identificar um telefone |
+
+
+# TELEFONE 
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_telefone    | Número(4) | Código único para identificar um telefone |
+| ddi             | texto(2)  | Discagem Direta Internacional |
+| ddd             | texto(2)  | Discagem Direta à Distância |
+| numero telefone | texto(9)  | Número do telefone |
+
+# FUNCIONARIO_ENDERECO
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_funcionario | Número(4) | Código único para identificar um funcionário |
+| cod_endereco    | Número(4) | Código único para identificar um endereço |
+
+
+# BAIRRO
+| Campo       | Tipo      | Descrição |
+|-------------|-----------|-----------|
+| cod_bairro  | Número(4) | Código único para identificar um bairro |
+| cod_cidade  | Número(4) | Código único para identificar uma cidade |
+| nome_bairro | Número(4) | Nome do bairro |
+
+
+#ENDERECO
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_endereco      | Número(4) | Código único para identificar um endereço |
+| cod_cidade        | Número(4) | Código único para identificar uma cidade |
+| cod_cep           | Número(4) | Código único para identificar um CEP |
+| descricao_endereco| texto(100)| Descrição do endereço |
+| bairro            | Número(4) | Código único para identificar um bairro |
+| logradouro        | texto(100)| Nome do logradouro |
+| numero            | Número(4) | Número do endereço |
+| complemento       | texto(50) | Complemento do endereço |
+
+
+#CIDADE
+| Campo       | Tipo      | Descrição |
+|-------------|-----------|-----------|
+| cod_cidade  | Número(4) | Código único para identificar uma cidade |
+| cod_estado  | Número(4) | Código único para identificar um estado |
+| nome_cidade | texto(50) | Nome da cidade |
+
+
+#ESTADO
+| Campo       | Tipo      | Descrição |
+|-------------|-----------|-----------|
+| cod_estado  | Número(4) | Código único para identificar um estado |
+| nome_estado | texto(50) | Nome do estado |
+
+#CEP
+| Campo      | Tipo      | Descrição |
+|------------|-----------|-----------|
+| cod_cep    | Número(4) | Código único para identificar um CEP |
+| numero_cep | texto(8)  | Número do CEP |
+
+
+#FAZENDA_ENDERCO
+| Campo       | Tipo      | Descrição |
+|-------------|-----------|-----------|
+| cod_endereco| Número(4) | Código único para identificar um endereço |
+| cod_fazenda | Número(4) | Código único para identificar uma fazenda |
+
+
+#FAZENDA_TELEFONE
+| Campo       | Tipo      | Descrição |
+|-------------|-----------|-----------|
+| cod_fazenda | Número(4) | Código único para identificar uma fazenda |
+| cod_telefone| Número(4) | Código único para identificar um telefone |
+
+
+#FAZENDA
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_fazenda     | Número(4) | Código único para identificar uma fazenda |
+| cod_funcionario | Número(4) | Código único para identificar um funcionário |
+| razao_social    | texto(100)| Razão social da fazenda |
+| nome_fazenda    | texto(50) | Nome da fazenda |
+| cnpj            | texto(14) | CNPJ da fazenda |
+| tipo_cultivo    | texto(50) | Tipo de cultivo da fazenda |
+| data_inicio     | date      | Data de início da fazenda |
+
+#FAZENDA_FUNCIONARIO
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_funcionario | Número(4) | Código único para identificar um funcionário |
+| cod_fazenda     | Número(4) | Código único para identificar uma fazenda |
+
+
+#FUNCIONARIO_PLANTACAO
+| Campo         | Tipo      | Descrição |
+|---------------|-----------|-----------|
+| cod_plantacao | Número(4) | Código único para identificar uma plantação |
+| cod_funcionario | Número(4) | Código único para identificar um funcionário |
+
+
+#PLANTACAO
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_plantacao     | Número(4) | Código único para identificar uma plantação |
+| data_plantio      | date      | Data de plantio da plantação |
+| tipo_plantacao    | texto(50) | Tipo de plantação |
+| idade_planta      | Número(4) | Idade da planta |
+| saude_plantacao   | texto(50) | Saúde da plantação |
+| producao_estimada | Número(4) | Produção estimada da plantação |
+| localizacao       | texto(100)| Localização da plantação |
+| numero_prateleira | Número(4) | Número da prateleira onde a plantação está localizada |
+
+
+
+#CONTROLE_LUZ
+| Campo           | Tipo      | Descrição |
+|-----------------|-----------|-----------|
+| cod_controle_luz| Número(4) | Código único para identificar um controle de luz |
+| cod_plantacao   | Número(4) | Código único para identificar uma plantação |
+| duracao_luz     | Número(4) | Duração da luz |
+| fonte_luz       | texto(50) | Fonte da luz |
+| tipo_luz        | texto(50) | Tipo de luz |
+| hora_inicial    | time      | Hora inicial da luz |
+| data_inicial    | date      | Data inicial da luz |
+| data_final      | date      | Data final da luz |
+| hora_final      | time      | Hora final da luz |
+
+
+# CONTROLE_TEMPERATURA
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_controle_clima| Número(4) | Código único para identificar um controle de clima |
+| cod_plantacao     | Número(4) | Código único para identificar uma plantação |
+| hora_inicial      | time      | Hora inicial do controle de temperatura |
+| data_inicial      | date      | Data inicial do controle de temperatura |
+| temperatura       | Número(4) | Temperatura a ser controlada |
+| hora_final        | time      | Hora final do controle de temperatura |
+| data_final        | date      | Data final do controle de temperatura |
+| duracao           | time      | Duração do controle de temperatura |
+
+
+
+# CONTROLE_AGUA
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_controle_agua | Número(4) | Código único para identificar um controle de água |
+| cod_plantacao     | Número(4) | Código único para identificar uma plantação |
+| fonte_agua        | texto(50) | Fonte da água |
+| hora_inicial      | time      | Hora inicial do controle de água |
+| hora_final        | time      | Hora final do controle de água |
+| data_inicial      | date      | Data inicial do controle de água |
+| quantidade_agua   | Número(4) | Quantidade de água |
+| duracao           | time      | Duração do controle de água |
+| data_final        | Número(4) | Data final do controle de água |
+
+
+#CONTROLE_PRAGAS_DOENCAS
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_pragas_doencas| Número(4) | Código único para identificar uma praga ou doença |
+| cod_plantacao     | Número(4) | Código único para identificar uma plantação |
+| nome_comum        | texto(50) | Nome comum da praga ou doença |
+| nome_cientifico   | texto(50) | Nome científico da praga ou doença |
+| tipo              | texto(50) | Tipo da praga ou doença |
+| data_deteccao     | date      | Data de detecção da praga ou doença |
+| eficacia          | Número(4) | Eficácia do controle da praga ou doença |
+| severidade        | Número(5) | Severidade da praga ou doença |
+| metodo_controle   | texto(50) | Método de controle usado para a praga ou doença |
+
+
+
+#COLHEITA
+| Campo             | Tipo      | Descrição |
+|-------------------|-----------|-----------|
+| cod_colheita      | Número(4) | Código único para identificar uma colheita |
+| cod_plantacao     | Número(4) | Código único para identificar uma plantação |
+| cod_funcionario   | Número(4) | Código único para identificar um funcionário |
+| quantidade_colhida| Número(4) | Quantidade colhida na colheita |
+| data_colhida      | date      | Data da colheita |
+| datas_anteriores  | date      | Datas de colheitas anteriores |
+
+
+
+#ESTOQUE
+| Campo          | Tipo      | Descrição |
+|----------------|-----------|-----------|
+| cod_estoque    | Número(4) | Código único para identificar um estoque |
+| cod_produto    | Número(4) | Código único para identificar um produto |
+| data_entrada   | date      | Data de entrada do produto no estoque |
+| estado_produto | texto(50) | Estado do produto |
+| quantidade     | Número(4) | Quantidade do produto no estoque |
+| lote           | Número(4) | Lote do produto |
+| data_saida     | date      | Data de saída do produto do estoque |
+| data_validade  | date      | Data de validade do produto |
+
+
+
+#QUALIDADE 
+| Campo          | Tipo      | Descrição |
+|----------------|-----------|-----------|
+| cod_qualidade  | Número(4) | Código único para identificar uma qualidade |
+| cod_produto    | Número(4) | Código único para identificar um produto |
+| classificacao  | Número(3) | Classificação da qualidade |
+| data_avaliacao | date      | Data da avaliação da qualidade |
+
