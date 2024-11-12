@@ -1,0 +1,547 @@
+CREATE DATABASE pim_oficial;
+GO
+
+USE pim;
+GO
+
+CREATE TABLE cargo(
+    cod_cargo INT PRIMARY KEY,  -- Código do cargo
+    nome_cargo VARCHAR(50) UNIQUE,  -- Nome do cargo
+    descricao VARCHAR(100),         -- Descrição do cargo
+    departamento VARCHAR(50)        -- Departamento ao qual o cargo pertence
+);
+
+INSERT INTO cargo(cod_cargo, nome_cargo, descricao, departamento)
+VALUES
+    (1, 'Gerente de cultivo', 'Responsável pelo gerenciamento de todas as atividades de cultivo', 'Departamento de Cultivo'),
+    (2, 'Pesquisador de P&D', 'Trabalha na pesquisa de novas técnicas de cultivo', 'Departamento de Pesquisa e Desenvolvimento'),
+    (3, 'Agricultor Urbano', 'Responsável pelo plantio, cuidado e colheita das plantas', 'Departamento de Cultivo'),
+    (4, 'Técnico de Manutencao','Realiza, manutencao preventica de sistemas, maquinas e equipamentos', 'departamento de manutencao');
+
+
+CREATE TABLE funcionario(
+    cod_funcionario INT PRIMARY KEY,  -- Código do funcionário
+    cod_cargo INT NOT NULL,           -- Código do cargo que o funcionário ocupa
+    data_nascimento DATE,             -- Data de nascimento do funcionário
+    primeiro_nome VARCHAR(30),        -- Primeiro nome do funcionário
+    ultimo_nome VARCHAR(30),          -- Último nome do funcionário
+    salario DECIMAL(6,2),             -- Salário do funcionario
+    cpf VARCHAR(11) UNIQUE NOT NULL,  -- CPF do funcionário
+    rg VARCHAR(9) UNIQUE NOT NULL,    -- RG do funcionário
+    FOREIGN KEY (cod_cargo) REFERENCES cargo(cod_cargo)  -- Chave estrangeira referenciando a tabela 'cargo'
+);
+
+
+
+INSERT INTO funcionario(cod_funcionario, cod_cargo, data_nascimento, primeiro_nome, ultimo_nome, salario, cpf, rg)
+VALUES
+    (10, 1, '1980-05-10', 'João', 'Silva', 5000.00, '12345678901', '123456789'),
+    (11, 2, '1990-10-15', 'Maria', 'Pereira', 4000.00, '23456789012', '234567890'),
+    (12, 3, '1995-07-20', 'Carlos', 'Santos', 3000.00, '34567890123', '345678901'),
+    (14, 3, '1985-06-03', 'Ana', 'Oliveira', 3100.00, '67890123456', '678901234'),
+    (15, 2, '1992-11-05', 'Roberto', 'Almeida', 4100.00, '56789012345', '567890123'),
+    (13, 4, '2000-02-12', 'Gabriel', 'Silva', 1800.00, '78901234567', '789012365');
+
+
+CREATE TABLE usuario(
+    cod_usuario INT PRIMARY KEY,      -- Código do usuário
+    cod_funcionario INT NOT NULL,     -- Código do funcionário associado ao usuário
+    email VARCHAR(100) UNIQUE NOT NULL,  -- Email do usuário
+    status_conta VARCHAR(30),            -- Status da conta do usuário (Ativo, Inativo, etc.)
+    senha VARCHAR(50) NOT NULL,          -- Senha do usuário
+    FOREIGN KEY (cod_funcionario) REFERENCES funcionario(cod_funcionario)  -- Chave estrangeira referenciando a tabela 'funcionario'
+);
+
+
+INSERT INTO usuario(cod_usuario, cod_funcionario, email, status_conta, senha)
+VALUES 
+    (100, 10, 'joao.silva@email.com', 'Ativo', 'Joao123'),
+    (101, 11, 'maria.pereira@email.com', 'Ativo', 'Maria123'),
+    (103, 12, 'carlos.santos@email.com', 'Inativo', 'Carlos123'),
+    (102, 14, 'ana.oliveira@email.com', 'Ativo', 'Ana123'),
+    (105, 13, 'gabriel.silva@hotmail.com', 'Ativo', 'Gbiel123'),
+    (104, 15, 'roberto.almeida@email.com', 'Ativo', 'Roberto123');
+
+
+CREATE TABLE telefone (
+    cod_telefone INT PRIMARY KEY,     -- Código do telefone
+    ddi VARCHAR(2),                   -- DDI do telefone
+    ddd VARCHAR(2),                   -- DDD do telefone
+    numero_telefone VARCHAR(9),       -- Número do telefone
+    CONSTRAINT telefone_unico UNIQUE (ddd, numero_telefone)  -- A combinação de DDD e número do telefone deve ser única
+);
+
+
+INSERT INTO telefone(cod_telefone, ddi, ddd, numero_telefone) VALUES
+    (20, '55', '11', '987654321'),
+    (21, '55', '11', '234567890'),
+    (22, '55', '11', '345678901'),
+    (23, '55', '11', '456789012'),
+    (24, '55', '11', '567890123'),
+    (25, '55', '11', '978564522'),
+    (26, '55', '11', '678901234');
+
+
+CREATE TABLE funcionario_telefone(
+    cod_funcionario INT,              -- Código do funcionário
+    cod_telefone INT,                 -- Código do telefone
+    PRIMARY KEY (cod_funcionario, cod_telefone),  -- A combinação de código do funcionário e código do telefone é a chave primária
+    FOREIGN KEY (cod_funcionario) REFERENCES funcionario(cod_funcionario),  -- Chave estrangeira referenciando a tabela 'funcionario'
+    FOREIGN KEY (cod_telefone) REFERENCES telefone(cod_telefone)  -- Chave estrangeira referenciando a tabela 'telefone'
+);
+
+INSERT INTO funcionario_telefone(cod_funcionario, cod_telefone)
+VALUES
+    (10, 20),
+    (11, 21),
+    (12, 22),
+    (14, 23),
+    (15, 24),
+    (13, 26);
+
+-- Criação da tabela 'estado'
+CREATE TABLE estado(
+    cod_estado INT PRIMARY KEY,  -- Código do estado, um número inteiro que é a chave primária
+    nome_estado VARCHAR(50) UNIQUE  -- Nome do estado, uma string de até 50 caracteres que deve ser única
+);
+
+
+-- Inserção de dados na tabela 'estado'
+INSERT INTO estado(cod_estado, nome_estado)
+VALUES
+    (1, 'São Paulo');  -- Insere um novo estado com código 1 e nome 'São Paulo'
+
+-- Criação da tabela 'cidade'
+CREATE TABLE cidade(
+    cod_cidade INT PRIMARY KEY,  -- Código da cidade, um número inteiro que é a chave primária
+    nome_cidade VARCHAR(50),     -- Nome da cidade, uma string de até 50 caracteres
+    cod_estado INT,              -- Código do estado ao qual a cidade pertence, um número inteiro
+    FOREIGN KEY (cod_estado) REFERENCES estado(cod_estado)  -- Chave estrangeira referenciando a coluna 'cod_estado' da tabela 'estado'
+);
+
+-- Inserção de dados na tabela 'cidade'
+INSERT INTO cidade (cod_cidade, nome_cidade, cod_estado)
+VALUES
+    (70, 'São Paulo', 1);  -- Insere uma nova cidade com código 70, nome 'São Paulo' e código do estado 1
+
+
+-- Criação da tabela 'bairro'
+CREATE TABLE bairro(
+    cod_bairro INT PRIMARY KEY,  -- Código do bairro, um número inteiro que é a chave primária
+    nome_bairro VARCHAR(50),     -- Nome do bairro, uma string de até 50 caracteres
+    cod_cidade INT,              -- Código da cidade à qual o bairro pertence, um número inteiro
+    FOREIGN KEY (cod_cidade) REFERENCES cidade(cod_cidade)  -- Chave estrangeira referenciando a coluna 'cod_cidade' da tabela 'cidade'
+);
+
+
+-- Inserção de dados na tabela 'bairro'
+INSERT INTO bairro(cod_bairro, nome_bairro, cod_cidade)
+VALUES
+    (60, 'Jardim Paulista', 70),  -- Insere um novo bairro com código 60, nome 'Jardim Paulista' e código da cidade 70
+    (61, 'Bela Vista', 70),        -- Insere um novo bairro com código 61, nome 'Bela Vista' e código da cidade 70
+    (62, 'Santana', 70),           -- Insere um novo bairro com código 62, nome 'Santana' e código da cidade 70
+    (63, 'Vila Madalena',70),      -- Insere um novo bairro com código 63, nome 'Vila Madalena' e código da cidade 70
+    (64, 'Higianopolis', 70),      -- Insere um novo bairro com código 64, nome 'Higianopolis' e código da cidade 70
+    (65, 'Jardins', 70);           -- Insere um novo bairro com código 65, nome 'Jardins' e código da cidade 70
+
+
+-- Criação da tabela 'cep'
+CREATE TABLE cep(
+    cod_cep INT PRIMARY KEY,  -- Código do CEP, um número inteiro que é a chave primária
+    cep VARCHAR(8) UNIQUE     -- CEP, uma string de até 8 caracteres que deve ser única
+);
+
+
+-- Inserção de dados na tabela 'cep'
+INSERT INTO cep(cod_cep, cep)
+VALUES
+    (1, '01401001'),  -- Insere um novo CEP com código 1 e CEP '01401001'
+    (2, '01305000'),  -- Insere um novo CEP com código 2 e CEP '01305000'
+    (3, '02011000'),  -- Insere um novo CEP com código 3 e CEP '02011000'
+    (4, '05435000'),  -- Insere um novo CEP com código 4 e CEP '05435000'
+    (5, '01241001'),  -- Insere um novo CEP com código 5 e CEP '01241001'
+    (6, '01424000');  -- Insere um novo CEP com código 6 e CEP '01424000'
+
+-- Criação da tabela 'endereco'
+CREATE TABLE endereco(
+    cod_endereco INT PRIMARY KEY,  -- Código do endereço, um número inteiro que é a chave primária
+    cod_cidade INT NOT NULL,       -- Código da cidade do endereço, um número inteiro que não pode ser nulo
+    cod_cep INT NOT NULL,          -- Código do CEP do endereço, um número inteiro que não pode ser nulo
+    cod_bairro INT NOT NULL,       -- Código do bairro, um número inteiro que não pode ser nulo
+    logradouro VARCHAR(100),       -- Logradouro do endereço, uma string de até 100 caracteres
+    numero VARCHAR(5),             -- Número do endereço, uma string de até 5 caracteres
+    FOREIGN KEY (cod_cidade) REFERENCES cidade(cod_cidade),  -- Chave estrangeira referenciando a coluna 'cod_cidade' da tabela 'cidade'
+    FOREIGN KEY (cod_cep) REFERENCES cep(cod_cep),          -- Chave estrangeira referenciando a coluna 'cod_cep' da tabela 'cep'
+    FOREIGN KEY (cod_bairro) REFERENCES bairro(cod_bairro)  -- Chave estrangeira referenciando a coluna 'cod_bairro' da tabela 'bairro'
+);
+
+
+-- Inserção de dados na tabela 'endereco'
+INSERT INTO endereco(cod_endereco, cod_cidade, cod_cep, cod_bairro, logradouro, numero)
+VALUES
+    (200, 70, 1, 60, 'Avenida Nove de Julho', '900'),  -- Insere um novo endereço com código 200, código da cidade 70, código do CEP 1, código do bairro 60, logradouro 'Avenida Nove de Julho' e número '900'
+    (201, 70, 2, 61, 'Rua augusta', '150'),            -- Insere um novo endereço com código 201, código da cidade 70, código do CEP 2, código do bairro 61, logradouro 'Rua augusta' e número '150'
+    (202, 70, 3, 62, 'Rua voluntários da patria' , '654'),  -- Insere um novo endereço com código 202, código da cidade 70, código do CEP 3, código do bairro 62, logradouro 'Rua voluntários da patria' e número '654'
+    (203, 70, 4, 63, 'Rua Harmonia', '321'),          -- Insere um novo endereço com código 203, código da cidade 70, código do CEP 4, código do bairro 63, logradouro 'Rua Harmonia' e número '321'
+    (204, 70, 5, 64, 'Rua Piaui', '789'),             -- Insere um novo endereço com código 204, código da cidade 70, código do CEP 5, código do bairro 64, logradouro 'Rua Piaui' e número '789'
+    (205, 70, 6, 65, 'Alameda lorena', '456');        -- Insere um novo endereço com código 205, código da cidade 70, código do CEP 6, código do bairro 65, logradouro 'Alameda lorena' e número '456'
+
+
+-- Criação da tabela 'fazenda_urbana'
+CREATE TABLE fazenda_urbana(
+    cod_fazenda INT PRIMARY KEY,  -- Código da fazenda urbana, um número inteiro que é a chave primária
+    nome_fazenda VARCHAR(50) UNIQUE,  -- Nome da fazenda urbana, uma string de até 50 caracteres que deve ser única
+    razao_social VARCHAR(100),        -- Razão social da fazenda urbana, uma string de até 100 caracteres
+    cnpj VARCHAR(14) UNIQUE,          -- CNPJ da fazenda urbana, uma string de 14 caracteres que deve ser única
+    cod_endereco INT,                 -- Código do endereço da fazenda urbana, um número inteiro
+    tipo_cultivo VARCHAR(50),         -- Tipo de cultivo da fazenda urbana, uma string de até 50 caracteres
+    data_inicio DATE,                 -- Data de início das atividades da fazenda urbana, uma data
+    FOREIGN KEY (cod_endereco) REFERENCES endereco(cod_endereco)  -- Chave estrangeira referenciando a coluna 'cod_endereco' da tabela 'endereco'
+);
+
+
+-- Inserção de dados na tabela 'fazenda_urbana'
+INSERT INTO fazenda_urbana (cod_fazenda, nome_fazenda, razao_social, cnpj, cod_endereco, tipo_cultivo, data_inicio)
+VALUES
+(45, 'fazenda urbana xyz', 'fazenda urbana xyz ltda', '12345678900100', 200, 'cultivo vertical', '2019-01-01');  -- Insere uma nova fazenda urbana com código 45, nome 'fazenda urbana xyz', razão social 'fazenda urbana xyz ltda', CNPJ '12345678900100', código do endereço 200, tipo de cultivo 'cultivo vertical' e data de início '2019-01-01'
+
+-- Criação da tabela 'fazenda_urbana_endereco'
+CREATE TABLE fazenda_urbana_endereco(
+    cod_endereco INT NOT NULL,  -- Código do endereço, um número inteiro que não pode ser nulo
+    cod_fazenda INT NOT NULL,   -- Código da fazenda urbana, um número inteiro que não pode ser nulo
+    PRIMARY KEY (cod_endereco, cod_fazenda),  -- A combinação de código do endereço e código da fazenda urbana é a chave primária
+    FOREIGN KEY (cod_endereco) REFERENCES endereco(cod_endereco),  -- Chave estrangeira referenciando a coluna 'cod_endereco' da tabela 'endereco'
+    FOREIGN KEY (cod_fazenda) REFERENCES fazenda_urbana(cod_fazenda)  -- Chave estrangeira referenciando a coluna 'cod_fazenda' da tabela 'fazenda_urbana'
+);
+
+
+-- Inserção de dados na tabela 'fazenda_urbana_endereco'
+INSERT INTO fazenda_urbana_endereco(cod_endereco, cod_fazenda)
+VALUES (200, 45);  -- Insere um novo endereço de fazenda urbana com código de endereço 200 e código de fazenda urbana 45
+
+
+-- Criação da tabela 'fazenda_urbana_telefone'
+CREATE TABLE fazenda_urbana_telefone(
+    cod_telefone INT NOT NULL,  -- Código do telefone, um número inteiro que não pode ser nulo
+    cod_fazenda INT NOT NULL,   -- Código da fazenda urbana, um número inteiro que não pode ser nulo
+    PRIMARY KEY (cod_telefone, cod_fazenda),  -- A combinação de código do telefone e código da fazenda urbana é a chave primária
+    FOREIGN KEY (cod_telefone) REFERENCES telefone(cod_telefone),  -- Chave estrangeira referenciando a coluna 'cod_telefone' da tabela 'telefone'
+    FOREIGN KEY (cod_fazenda) REFERENCES fazenda_urbana(cod_fazenda)  -- Chave estrangeira referenciando a coluna 'cod_fazenda' da tabela 'fazenda_urbana'
+);
+
+
+-- Inserção de dados na tabela 'fazenda_urbana_telefone'
+INSERT INTO fazenda_urbana_telefone(cod_telefone, cod_fazenda)
+VALUES(25,45);  -- Insere um novo telefone de fazenda urbana com código de telefone 25 e código de fazenda urbana 45
+
+-- Criação da tabela 'funcionario_endereco'
+CREATE TABLE funcionario_endereco(
+    cod_funcionario INT NOT NULL,  -- Código do funcionário, um número inteiro que não pode ser nulo
+    cod_endereco INT NOT NULL,     -- Código do endereço, um número inteiro que não pode ser nulo
+    PRIMARY KEY (cod_funcionario, cod_endereco),  -- A combinação de código do funcionário e código do endereço é a chave primária
+    FOREIGN KEY (cod_funcionario) REFERENCES funcionario(cod_funcionario),  -- Chave estrangeira referenciando a coluna 'cod_funcionario' da tabela 'funcionario'
+    FOREIGN KEY (cod_endereco) REFERENCES endereco(cod_endereco)  -- Chave estrangeira referenciando a coluna 'cod_endereco' da tabela 'endereco'
+);
+
+-- Inserção de dados na tabela 'funcionario_endereco'
+INSERT INTO funcionario_endereco (cod_endereco, cod_funcionario)
+VALUES
+    (201,10),  -- Insere um novo endereço de funcionário com código de endereço 201 e código de funcionário 10
+    (202,11),  -- Insere um novo endereço de funcionário com código de endereço 202 e código de funcionário 11
+    (203,12),  -- Insere um novo endereço de funcionário com código de endereço 203 e código de funcionário 12
+    (204,14),  -- Insere um novo endereço de funcionário com código de endereço 204 e código de funcionário 14
+    (205,15),  -- Insere um novo endereço de funcionário com código de endereço 205 e código de funcionário 15
+    (202,13);  -- Insere um novo endereço de funcionário com código de endereço 202 e código de funcionário 13
+
+-- Criação da tabela 'fazenda_funcionario'
+CREATE TABLE fazenda_funcionario(
+    cod_funcionario INT NOT NULL,  -- Código do funcionário, um número inteiro que não pode ser nulo
+    cod_fazenda INT NOT NULL,      -- Código da fazenda urbana, um número inteiro que não pode ser nulo
+    PRIMARY KEY (cod_funcionario, cod_fazenda),  -- A combinação de código do funcionário e código da fazenda urbana é a chave primária
+    FOREIGN KEY (cod_funcionario) REFERENCES funcionario(cod_funcionario),  -- Chave estrangeira referenciando a coluna 'cod_funcionario' da tabela 'funcionario'
+    FOREIGN KEY (cod_fazenda) REFERENCES fazenda_urbana(cod_fazenda)  -- Chave estrangeira referenciando a coluna 'cod_fazenda' da tabela 'fazenda_urbana'
+);
+
+-- Inserção de dados na tabela 'fazenda_funcionario'
+INSERT INTO fazenda_funcionario(cod_fazenda, cod_funcionario)
+VALUES
+    (45, 10),  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 10
+    (45, 11),  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 11
+    (45, 12),  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 12
+    (45, 14),  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 14
+    (45, 15),  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 15
+    (45, 13);  -- Insere um novo funcionário de fazenda urbana com código de fazenda urbana 45 e código de funcionário 13
+
+-- Adicionando a nova coluna 'complemento' à tabela 'endereco'
+ALTER TABLE endereco
+ADD complemento VARCHAR(50);  -- Adiciona uma nova coluna 'complemento' à tabela 'endereco', que é uma string de até 50 caracteres
+
+
+-- Atualizando a coluna 'complemento' para 'apartamento' onde 'cod_endereco' é 202
+UPDATE endereco
+SET complemento = 'apartamento'  -- Define o 'complemento' como 'apartamento'
+WHERE cod_endereco = 202;  -- Condição: 'cod_endereco' é 202
+
+-- Atualizando a coluna 'complemento' para 'casa' onde 'cod_endereco' é 201
+UPDATE endereco
+SET complemento = 'casa'  -- Define o 'complemento' como 'casa'
+WHERE cod_endereco = 201;  -- Condição: 'cod_endereco' é 201
+
+-- Atualizando a coluna 'complemento' para 'casa' onde 'cod_endereco' é 203
+UPDATE endereco
+SET complemento = 'casa'  -- Define o 'complemento' como 'casa'
+WHERE cod_endereco = 203;  -- Condição: 'cod_endereco' é 203
+
+-- Atualizando a coluna 'complemento' para 'casa' onde 'cod_endereco' é 204
+UPDATE endereco
+SET complemento = 'casa'  -- Define o 'complemento' como 'casa'
+WHERE cod_endereco = 204;  -- Condição: 'cod_endereco' é 204
+
+-- Atualizando a coluna 'complemento' para 'casa' onde 'cod_endereco' é 205
+UPDATE endereco
+SET complemento = 'casa'  -- Define o 'complemento' como 'casa'
+WHERE cod_endereco = 205;  -- Condição: 'cod_endereco' é 205
+
+
+-- Criação da tabela 'Plantacao'
+CREATE TABLE Plantacao (
+    cod_plantacao INT PRIMARY KEY,  -- Código da plantação, um número inteiro que é a chave primária
+    data_plantio DATE,  -- Data do plantio, uma data
+    tipo_plantacao VARCHAR(100),  -- Tipo da plantação, uma string de até 100 caracteres
+    idade_plantacao VARCHAR(5),  -- Idade da plantação, uma string de até 5 caracteres
+    saude_plantacao VARCHAR(100),  -- Saúde da plantação, uma string de até 100 caracteres
+    producao_estimada INT  -- Produção estimada, um número inteiro
+);
+
+-- Adicionando as novas colunas 'localizacao' e 'numero_prateleira' à tabela 'Plantacao'
+ALTER TABLE Plantacao
+ADD localizacao VARCHAR(100),  -- Adiciona a coluna 'localizacao', que é uma string de até 100 caracteres
+    numero_prateleira INT;  -- Adiciona a coluna 'numero_prateleira', que é um número inteiro
+
+
+-- Modificando a coluna 'idade_plantacao' da tabela 'Plantacao'
+ALTER TABLE Plantacao
+ALTER COLUMN idade_plantacao VARCHAR(50);  -- Modifica a coluna 'idade_plantacao' para ser uma string de até 50 caracteres
+
+
+
+INSERT INTO Plantacao(cod_plantacao, data_plantio, tipo_plantacao, idade_plantacao, saude_plantacao, producao_estimada, numero_prateleira, localizacao)
+VALUES (1003, '2024-02-01', 'Morango', '2 meses', 'Saudavel', 100, 3, 'setor A');  -- Insere uma nova plantação com código 1003, data de plantio '2024-02-01', tipo 'Morango', idade '2 meses', saúde 'Saudavel', produção estimada 100, número da prateleira 3 e localização 'setor A'
+
+
+CREATE TABLE Funcionario_Plantacao (
+    cod_plantacao INT NOT NULL,  -- Código da plantação, um número inteiro que não pode ser nulo
+    cod_funcionario INT NOT NULL,  -- Código do funcionário, um número inteiro que não pode ser nulo
+    PRIMARY KEY (cod_plantacao, cod_funcionario),  -- A combinação de código da plantação e código do funcionário é a chave primária
+    FOREIGN KEY(cod_plantacao) REFERENCES Plantacao(cod_plantacao),  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'Plantacao'
+    FOREIGN KEY(cod_funcionario) REFERENCES Funcionario(cod_funcionario)  -- Chave estrangeira referenciando a coluna 'cod_funcionario' da tabela 'Funcionario'
+);
+
+-- Inserção de dados na tabela 'Funcionario_Plantacao'
+INSERT INTO Funcionario_Plantacao(cod_funcionario, cod_plantacao)
+VALUES
+    (12, 1003),  -- Insere um novo funcionário de plantação com código de funcionário 12 e código de plantação 1003
+    (15, 1003);  -- Insere um novo funcionário de plantação com código de funcionário 15 e código de plantação 1003
+
+
+CREATE TABLE Controle_Agua (
+    cod_controle INT PRIMARY KEY,  -- Código do controle, um número inteiro que é a chave primária
+    cod_plantacao INT,  -- Código da plantação, um número inteiro
+    hora_inicial TIME,  -- Hora inicial, um tempo
+    hora_final TIME,  -- Hora final, um tempo
+    duracao TIME,  -- Duração, um tempo
+    data_inicial DATE,  -- Data inicial, uma data
+    data_final DATE,  -- Data final, uma data
+    fonte_agua VARCHAR(100),  -- Fonte da água, uma string de até 100 caracteres
+    quantidade_agua VARCHAR(100),  -- Quantidade de água, uma string de até 100 caracteres
+    FOREIGN KEY (cod_plantacao) REFERENCES Plantacao(cod_plantacao)  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'Plantacao'
+);
+
+
+-- Inserção de dados na tabela 'Controle_Agua'
+INSERT INTO Controle_Agua(cod_controle, cod_plantacao, hora_inicial, hora_final, duracao, data_inicial, data_final, fonte_agua, quantidade_agua)
+VALUES (1, 1003, '07:00:00', '09:00:00', '02:00:00', '2024-05-07', '2024-05-07', 'Poço artesiano', '200.0');  -- Insere um novo controle de água com código de controle 1, código de plantação 1003, hora inicial '07:00:00', hora final '09:00:00', duração '02:00:00', data inicial '2024-05-07', data final '2024-05-07', fonte de água 'Poço artesiano' e quantidade de água '200.0'
+
+-- Criação da tabela 'Controle_Luz'
+CREATE TABLE Controle_Luz (
+    cod_luz INT PRIMARY KEY,  -- Código da luz, um número inteiro que é a chave primária
+    cod_plantacao INT NOT NULL,  -- Código da plantação, um número inteiro que não pode ser nulo
+    hora_inicial TIME,  -- Hora inicial, um tempo
+    hora_final TIME,  -- Hora final, um tempo
+    duracao_luz TIME,  -- Duração da luz, um tempo
+    data_inicial DATE,  -- Data inicial, uma data
+    data_final DATE,  -- Data final, uma data
+    fonte_luz VARCHAR(100),  -- Fonte da luz, uma string de até 100 caracteres
+    tipo_luz VARCHAR(100),  -- Tipo da luz, uma string de até 100 caracteres
+    FOREIGN KEY (cod_plantacao) REFERENCES Plantacao(cod_plantacao)  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'Plantacao'
+);
+
+-- Inserção de dados na tabela 'Controle_Luz'
+INSERT INTO Controle_Luz (cod_luz, cod_plantacao, hora_inicial, hora_final, duracao_luz, data_inicial, data_final, fonte_luz, tipo_luz)
+VALUES 
+(1, 1003, '07:00:00', '19:00:00', '12:00:00', '2024-05-07', '2024-05-07', 'Luz LED', 'Luz roxa');  -- Insere um novo controle de luz com código de luz 1, código de plantação 1003, hora inicial '07:00:00', hora final '19:00:00', duração da luz '12:00:00', data inicial '2024-05-07', data final '2024-05-07', fonte de luz 'Luz LED' e tipo de luz 'Luz roxa'
+
+-- Criação da tabela 'Controle_Temperatura'
+CREATE TABLE Controle_Temperatura (
+    cod_temperatura INT PRIMARY KEY,  -- Código da temperatura, um número inteiro que é a chave primária
+    cod_plantacao INT,  -- Código da plantação, um número inteiro
+    hora_inicial TIME,  -- Hora inicial, um tempo
+    hora_final TIME,  -- Hora final, um tempo
+    duracao TIME,  -- Duração, um tempo
+    data_inicial DATE,  -- Data inicial, uma data
+    data_final DATE,  -- Data final, uma data
+    temperatura DECIMAL(3,1),  -- Temperatura, um decimal com 3 dígitos no total e 1 dígito após o ponto decimal
+    FOREIGN KEY (cod_plantacao) REFERENCES Plantacao(cod_plantacao)  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'Plantacao'
+);
+
+-- Inserção de dados na tabela 'Controle_Temperatura'
+INSERT INTO Controle_Temperatura (cod_temperatura, cod_plantacao, hora_inicial, hora_final, duracao, data_inicial, data_final, temperatura)
+VALUES (1, 1003, '07:00:00', '19:00:00', '12:00:00', '2024-05-07', '2024-05-07', 25.0);  -- Insere um novo controle de temperatura com código de temperatura 1, código de plantação 1003, hora inicial '07:00:00', hora final '19:00:00', duração '12:00:00', data inicial '2024-05-07', data final '2024-05-07' e temperatura 25.0
+
+-- Criação da tabela 'Controle_Pragas_Doencas'
+CREATE TABLE Controle_Pragas_Doencas (
+    cod_pragas_doencas INT PRIMARY KEY,  -- Código das pragas/doenças, um número inteiro que é a chave primária
+    cod_plantacao INT NOT NULL,  -- Código da plantação, um número inteiro que não pode ser nulo
+    nome_comum VARCHAR(100),  -- Nome comum, uma string de até 100 caracteres
+    nome_cientifico VARCHAR(100),  -- Nome científico, uma string de até 100 caracteres
+    tipo VARCHAR(100),  -- Tipo, uma string de até 100 caracteres
+    data_deteccao DATE,  -- Data de detecção, uma data
+    eficacia DECIMAL(3,2),  -- Eficácia, um decimal com 3 dígitos no total e 2 dígitos após o ponto decimal
+    severidade VARCHAR(100),  -- Severidade, uma string de até 100 caracteres
+    metodo_controle VARCHAR(255),  -- Método de controle, uma string de até 255 caracteres
+    FOREIGN KEY (cod_plantacao) REFERENCES Plantacao(cod_plantacao)  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'Plantacao'
+);
+
+
+-- Inserção de dados na tabela 'Controle_Pragas_Doencas'
+INSERT INTO Controle_Pragas_Doencas (cod_pragas_doencas, cod_plantacao, nome_comum, nome_cientifico, tipo, data_deteccao, eficacia, severidade, metodo_controle)
+VALUES
+(1, 1003, 'acaro-rajado', 'Tetranychus urticae', 'Inseto', '2024-05-07', 0.85, 'Moderada', 'Acaricida'),  -- Insere um novo controle de pragas/doenças com código de pragas/doenças 1, código de plantação 1003, nome comum 'acaro-rajado', nome científico 'Tetranychus urticae', tipo 'Inseto', data de detecção '2024-05-07', eficácia 0.85, severidade 'Moderada' e método de controle 'Acaricida'
+(3, 1003, 'Antracnose', 'Colletotrichum acutatum', 'Doenca fungica', '2024-05-09', 0.75, 'Alta', 'Fungicida');  -- Insere um novo controle de pragas/doenças com código de pragas/doenças 3, código de plantação 1003, nome comum 'Antracnose', nome científico 'Colletotrichum acutatum', tipo 'Doenca fungica', data de detecção '2024-05-09', eficácia 0.75, severidade 'Alta' e método de controle 'Fungicida'
+
+-- Criação da tabela 'colheita'
+CREATE TABLE colheita (
+    cod_colheita INT PRIMARY KEY,  -- Código da colheita, um número inteiro que é a chave primária
+    cod_plantacao INT,  -- Código da plantação, um número inteiro
+    cod_funcionario INT,  -- Código do funcionário, um número inteiro
+    quantidade_colhida INT,  -- Quantidade colhida, um número inteiro
+    data_colhida DATE,  -- Data da colheita, uma data
+    data_anterior DATE,  -- Data anterior, uma data
+    FOREIGN KEY (cod_plantacao) REFERENCES plantacao(cod_plantacao),  -- Chave estrangeira referenciando a coluna 'cod_plantacao' da tabela 'plantacao'
+    FOREIGN KEY (cod_funcionario) REFERENCES funcionario(cod_funcionario)  -- Chave estrangeira referenciando a coluna 'cod_funcionario' da tabela 'funcionario'
+);
+
+
+-- Inserção de dados na tabela 'colheita'
+INSERT INTO colheita (cod_colheita, cod_plantacao, cod_funcionario, quantidade_colhida, data_colhida)
+VALUES (1, 1003, 14, 50, '2024-05-07');  -- Insere uma nova colheita com código de colheita 1, código de plantação 1003, código de funcionário 14, quantidade colhida 50 e data de colheita '2024-05-07'
+
+
+-- Criação da tabela 'produto'
+CREATE TABLE produto (
+    cod_produto INT PRIMARY KEY,  -- Código do produto, um número inteiro que é a chave primária
+    cod_colheita INT NOT NULL,  -- Código da colheita, um número inteiro que não pode ser nulo
+    tipo_morango VARCHAR(100),  -- Tipo de morango, uma string de até 100 caracteres
+    FOREIGN KEY (cod_colheita) REFERENCES colheita(cod_colheita)  -- Chave estrangeira referenciando a coluna 'cod_colheita' da tabela 'colheita'
+);
+
+-- Inserção de dados na tabela 'produto'
+INSERT INTO produto (cod_produto, cod_colheita, tipo_morango)
+VALUES (1, 1, 'Morango Camarosa');  -- Insere um novo produto com código de produto 1, código de colheita 1 e tipo de morango 'Morango Camarosa'
+
+
+-- Criação da tabela 'qualidade'
+CREATE TABLE qualidade (
+    cod_qualidade INT PRIMARY KEY,  -- Código da qualidade, um número inteiro que é a chave primária
+    cod_produto INT,  -- Código do produto, um número inteiro
+    classificacao VARCHAR(100),  -- Classificação, uma string de até 100 caracteres
+    data_avaliacao DATE,  -- Data da avaliação, uma data
+    FOREIGN KEY (cod_produto) REFERENCES produto(cod_produto)  -- Chave estrangeira referenciando a coluna 'cod_produto' da tabela 'produto'
+);
+
+Inserção de dados na tabela 'qualidade'
+INSERT INTO qualidade (cod_qualidade, cod_produto, classificacao, data_avaliacao)
+VALUES (1, 1, 'Excelente', '2024-05-07');  -- Insere uma nova qualidade com código de qualidade 1, código de produto 1, classificação 'Excelente' e data de avaliação '2024-05-07'
+
+
+---- Criação da tabela 'estoque'
+CREATE TABLE estoque (
+    cod_estoque INT PRIMARY KEY,  -- Código do estoque, um número inteiro que é a chave primária
+    cod_produto INT NOT NULL,  -- Código do produto, um número inteiro que não pode ser nulo
+    data_entrada DATE,  -- Data de entrada, uma data
+    estado_produto VARCHAR(100),  -- Estado do produto, uma string de até 100 caracteres
+    quantidade INT,  -- Quantidade, um número inteiro
+    data_validade_produto DATE,  -- Data de validade do produto, uma data
+    lote VARCHAR(100),  -- Lote, uma string de até 100 caracteres
+    data_saida DATE,  -- Data de saída, uma data
+    FOREIGN KEY (cod_produto) REFERENCES produto(cod_produto)  -- Chave estrangeira referenciando a coluna 'cod_produto' da tabela 'produto'
+);
+
+
+-- Inserção de dados na tabela 'estoque'
+INSERT INTO estoque (cod_estoque, cod_produto, data_entrada, estado_produto, quantidade, data_validade_produto, lote, data_saida)
+VALUES (1, 1, '2024-05-07', 'Bom', 100, '2024-06-07', 'Lote setor A', NULL);  -- Insere um novo estoque com código de estoque 1, código de produto 1, data de entrada '2024-05-07', estado do produto 'Bom', quantidade 100, data de validade do produto '2024-06-07', lote 'Lote setor A' e data de saída NULL
+
+
+-- Atualização da tabela 'CARGO'
+UPDATE CARGO
+SET DESCRICAO = 'Realiza, munutencao preventiva de sistemas, maquinas e equipamentos'  -- Define a 'DESCRICAO' como 'Realiza, munutencao preventiva de sistemas, maquinas e equipamentos'
+WHERE cod_cargo = 4;  -- Condição: 'cod_cargo' é 4
+
+
+-- Modificando o nome da coluna 'tipo_morango' para 'tipo_produto' na tabela 'produto'
+EXEC sp_rename 'produto.tipo_morango', 'tipo_produto', 'COLUMN';
+
+
+-- Modificando o tipo da coluna 'eficácia' na tabela 'controle_pragas_doencas'
+ALTER TABLE controle_pragas_doencas
+ALTER COLUMN eficacia DECIMAL(5,2);  -- Modifica a coluna 'eficácia' para ser um decimal com 5 dígitos no total e 2 dígitos após o ponto decimal
+
+-- Atualização da tabela 'controle_pragas_doencas'
+UPDATE controle_pragas_doencas
+SET eficacia = 65.0  -- Define a 'eficacia' como 65.0
+WHERE cod_pragas_doencas = 1;  -- Condição: 'cod_pragas_doencas' é 1
+
+
+-- Atualização da tabela 'controle_pragas_doencas'
+UPDATE controle_pragas_doencas
+SET eficacia = 85.0  -- Define a 'eficacia' como 85.0
+WHERE cod_pragas_doencas = 3;  -- Condição: 'cod_pragas_doencas' é 3
+
+
+
+CREATE TABLE Pessoa (
+    cod_pessoa INT IDENTITY(1,1) PRIMARY KEY,
+    data_nascimento DATE,
+    primeiro_nome VARCHAR(50),
+    ultimo_nome VARCHAR(50),
+    cpf VARCHAR(11),
+    rg VARCHAR(15)
+);
+
+
+INSERT INTO Pessoa (data_nascimento, primeiro_nome, ultimo_nome, cpf, rg)
+SELECT data_nascimento, primeiro_nome, ultimo_nome, cpf, rg
+FROM Funcionario;
+
+
+
+INSERT INTO Pessoa (data_nascimento, primeiro_nome, ultimo_nome, cpf, rg)
+SELECT data_nascimento, primeiro_nome, ultimo_nome, cpf, rg
+FROM Funcionario;
+
+
+
+ALTER TABLE Funcionario
+ADD cod_pessoa INT;
+
+
+UPDATE f
+SET f.cod_pessoa = p.cod_pessoa
+FROM Funcionario f
+JOIN Pessoa p ON f.cpf = p.cpf;
+
+
+
+ALTER TABLE Funcionario
+DROP COLUMN data_nascimento, primeiro_nome, ultimo_nome, cpf, rg;
